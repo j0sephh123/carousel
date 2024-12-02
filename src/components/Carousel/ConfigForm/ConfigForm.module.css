@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form {
+  flex: 1;
+}
+
+.display {
+  flex: 1;
+}

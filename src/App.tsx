@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from "react";
-import HorizontalCarousel from "./Horizontal";
+import useCarouselContext from "./context/useCarouselContext";
+import styles from "./App.module.css";
+import ScrollableContainer from "./components/Carousel/ScrollableContainer";
+import ConfigForm from "./components/Carousel/ConfigForm/ConfigForm";
 
-const App: React.FC = () => {
-  const [images, setImages] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      const response = await fetch(
-        "https://picsum.photos/v2/list?page=1&limit=100"
-      );
-      const data = await response.json();
-      const imageUrls = data.map((item: any) => item.download_url);
-      setImages(imageUrls);
-    };
-
-    fetchImages();
-  }, []);
+const App = () => {
+  const { key } = useCarouselContext();
 
   return (
     <div>
-      <h1>Infinite Image Carousel</h1>
-      {images.length > 0 && <HorizontalCarousel items={images} />}
+      <h2>Infinite Image Carousel</h2>
+      <div className={styles.carouselWrapper}>
+        <ScrollableContainer key={key} />
+      </div>
+      <ConfigForm />
     </div>
   );
 };
