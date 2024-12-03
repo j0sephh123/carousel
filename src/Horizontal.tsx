@@ -1,95 +1,153 @@
-import { useRef, useState } from "react";
+import { useRef, useEffect } from "react";
+import { FixedSizeList as List } from "react-window";
+import useWindowSize from "./hooks/useWindowSize";
+import { ImageData } from "./types";
 
-const HorizontalCarousel = ({ items }) => {
-  const scrollRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+type Props = {
+  items: ImageData[];
+};
 
-  const handleWheel = (e) => {
-    if (scrollRef.current) {
-      e.preventDefault();
-      scrollRef.current.scrollLeft += e.deltaY;
-    }
-  };
+// TODO rename the file and move to components folder
+const HorizontalCarousel = ({ items }: Props) => {
+  const { width } = useWindowSize(); // Get updated width on resize
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const listRef = useRef(null);
+  const itemWidth = 200 + 20; // 200px image + 10px margin on each side
 
+  // Duplicate items
+  // TODO useMemo
+  const extendedItems = [...items, ...items, ...items];
+
+  // TODO fix types
   const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX - scrollRef.current.offsetLeft);
-    setScrollLeft(scrollRef.current.scrollLeft);
+    isDragging.current = true;
+    startX.current = e.pageX;
+    scrollLeft.current = listRef.current._outerRef.scrollLeft;
+    e.preventDefault(); // Prevent text selection
   };
 
+  // TODO fix types
   const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = x - startX;
-    scrollRef.current.scrollLeft = scrollLeft - walk;
+    if (!isDragging.current) return;
+    const x = e.pageX;
+    const walk = startX.current - x;
+    listRef.current._outerRef.scrollLeft = scrollLeft.current + walk;
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
+    isDragging.current = false;
   };
 
+  // TODO fix types
   const handleTouchStart = (e) => {
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX - scrollRef.current.offsetLeft);
-    setScrollLeft(scrollRef.current.scrollLeft);
+    isDragging.current = true;
+    startX.current = e.touches[0].pageX;
+    scrollLeft.current = listRef.current._outerRef.scr // Fixed heightollLeft;
   };
 
+  // TODO fix types
   const handleTouchMove = (e) => {
-    if (!isDragging) return;
-    const x = e.touches[0].pageX - scrollRef.current.offsetLeft;
-    const walk = x - startX;
-    scrollRef.current.scrollLeft = scrollLeft - walk;
+    if (!isDragging.current) return;
+    const x = e.touches[0].pageX;
+    const walk = startX.current - x;
+    listRef.current._outerRef.scrollLeft = scrollLeft.current + walk;
   };
 
   const handleTouchEnd = () => {
-    setIsDragging(false);
+    isDragging.current = false;
   };
+
+  // TODO fix types
+  const handleWheel = (e) => {
+    if (!listRef.current || !listRef.current._outerRef) return;
+
+    const rect = listRef.current._outerRef.getBoundingClientRect();
+ // Fixed height
+    listRef.current._outerRef.scrollLeft += e.deltaY;
+  };
+
+  // Adjust scroll position to the middle (original items) when reaching the edges
+  const handleScroll = () => {
+    if (!listRef.current || !listRef.current._outerRef) return;
+
+    const outerRef = listRef.current._outerRef;
+    const maxScrollLeft = itemWidth * items.length;
+
+    if (outerRef.scrollLeft <= 0) {
+      // Jump to the end of original items
+      outerRef.scrollLeft += maxScrollLeft;
+    } else if (outerRef.scrollLeft >= maxScrollLeft * 2) {
+      // Jump back to the start of original items
+      outerRef.scrollLeft -= maxScrollLeft;
+    }
+  };
+
+  // Initialize scroll position to the middle (start of original items)
+  useEffect(() => {
+    if (listRef.current && listRef.current._outerRef) {
+      listRef.current._outerRef.scrollLeft = itemWidth * items.length; // Middle of extended items
+    }
+  }, [itemWidth, items]);
 
   return (
     <div
-      ref={scrollRef}
       style={{
-        display: "flex",
-        overflowX: "hidden",
-        whiteSpace: "nowrap",
-        border: "1px solid black",
-        cursor: isDragging ? "grabbing" : "grab",
+        // TODO move into css file
+        position: "relative",
+        cursor: isDragging.current ? "grabbing" : "grab",
+        height: "220px", // TODO needs to be dynamic?
+        overflow: "hidden",
       }}
-      onWheel={handleWheel}
-      onMouseDown={handleMouseDown}
+      onMouseDown={handleMouseDown} // Fixed height
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onWheel={handleWheel}
     >
-      <style>
-        {`
-          /* Hide scrollbar for WebKit-based browsers */
-          div::-webkit-scrollbar {
-            display: none;
-          }
-        `}
-      </style>
-      {items.map((item, index) => (
-        <div
-          key={index}
-          style={{
-            flex: "0 0 auto",
-            margin: "5px",
-            padding: "10px",
-            background: "lightblue",
-            minWidth: "100px",
-            textAlign: "center",
-          }}
-        >
-          {item}
-        </div>
-      ))}
+      <List
+        ref={listRef}
+        layout="horizontal"
+        height={220}
+        width={width}
+        itemSize={itemWidth}
+        itemCount={extendedItems.length}
+        style={{
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollbarWidth: "none",
+        }}
+        onScroll={handleScroll}
+      >
+        {({ index, style }) => (
+          <div
+            style={{
+              // TODO move into css file
+              ...style, // Ensure react-window positioning is respected, <img only doesn't work :(
+              display: "flex",
+              justifyContent: "center", // Center-align the image in the wrapper
+              alignItems: "center", // Vertically align if needed
+              boxSizing: "border-box", // Ensure padding doesn't affect total width
+            }}
+          >
+            <img
+              src={extendedItems[index % items.length]}
+              alt={`carousel-item-${index}`}
+              style={{
+                height: "200px", // Fixed height, probably should be dynamic
+                width: "200px", // Match the intended width,
+                objectFit: "cover", // Maintain image aspect ratio? Need to double check if this is correct
+                margin: "0 10px", // Add horizontal spacing? Do we need it?
+                background: "lightblue", // debugging purposes
+              }}
+            />
+          </div>
+        )}
+      </List>
     </div>
   );
 };

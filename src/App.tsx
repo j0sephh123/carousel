@@ -1,21 +1,8 @@
-import React, { useEffect, useState } from "react";
 import HorizontalCarousel from "./Horizontal";
+import useImages from "./hooks/useImages";
 
-const App: React.FC = () => {
-  const [images, setImages] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      const response = await fetch(
-        "https://picsum.photos/v2/list?page=1&limit=100"
-      );
-      const data = await response.json();
-      const imageUrls = data.map((item: any) => item.download_url);
-      setImages(imageUrls);
-    };
-
-    fetchImages();
-  }, []);
+const App = () => {
+  const images = useImages();
 
   return (
     <div>
