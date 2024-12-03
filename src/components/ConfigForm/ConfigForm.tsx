@@ -2,6 +2,8 @@ import { useState, startTransition } from "react";
 import { DEFAULT_ITEM_SIZE } from "../../constants";
 import { Config } from "../../types";
 import classes from "./ConfigForm.module.css";
+import GenericInput from "./GenericInput";
+import GenericButton from "./GenericButton";
 
 type Props = {
   setConfig: (config: { itemSize: number }) => void;
@@ -13,8 +15,9 @@ export default function ConfigForm({ config, setConfig }: Props) {
     config.itemSize || DEFAULT_ITEM_SIZE
   );
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setItemSize(parseInt(event.target.value) || 0);
+  const handleInputChange = (value: string | number) => {
+    const parsedValue = typeof value === "string" ? parseInt(value, 10) : value;
+    setItemSize(parsedValue || 0); // Fallback to 0 if the parsed value is NaN
   };
 
   const handleSave = () => {
@@ -39,15 +42,15 @@ export default function ConfigForm({ config, setConfig }: Props) {
     <div className={classes.wrapper}>
       <div className={classes.form}>
         <h2>Config</h2>
-        <input
+        <GenericInput
+          onChange={handleInputChange}
           type="number"
           value={itemSize}
-          onChange={handleInputChange}
-          placeholder="Item size"
+          label="Item size"
         />
         <br />
-        <button onClick={handleSave}>Save</button>
-        <button onClick={handleReset}>Reset</button>
+        <GenericButton onClick={handleSave} label="Save" />
+        <GenericButton onClick={handleReset} label="Reset" />
       </div>
       <div className={classes.display}>
         <pre>{JSON.stringify(config, null, 2)}</pre>
