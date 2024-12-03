@@ -1,0 +1,10 @@
+.wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.list {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}

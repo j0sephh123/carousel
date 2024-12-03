@@ -18,9 +18,10 @@ export default function useTouch({
     startXRef.current = e.touches[0].pageX;
     scrollLeftRef.current = listRef.current._outerRef.scrollLeft;
   };
-  // TODO fix types
+
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
+
     const x = e.touches[0].pageX;
     const walk = startXRef.current - x;
     listRef.current._outerRef.scrollLeft = scrollLeftRef.current + walk;

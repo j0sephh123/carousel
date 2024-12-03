@@ -17,11 +17,15 @@ export default function useMouse({
     isDraggingRef.current = true;
     startXRef.current = e.pageX;
     scrollLeftRef.current = listRef.current._outerRef.scrollLeft;
+
     e.preventDefault(); // Prevent text selection
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
+    if (!isDraggingRef.current) {
+      return;
+    }
+
     const x = e.pageX;
     const walk = startXRef.current - x;
     listRef.current._outerRef.scrollLeft = scrollLeftRef.current + walk;

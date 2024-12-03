@@ -1,15 +1,31 @@
 import { ListRef } from "./types";
 
-export default function useWheel(listRef: ListRef) {
-  // TODO fix types
+type Props = {
+  listRef: ListRef;
+  itemSize: number;
+};
+
+export default function useWheel({ listRef, itemSize }: Props) {
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (!listRef.current || !listRef.current._outerRef) return;
+    if (!listRef.current || !listRef.current._outerRef) {
+      return;
+    }
 
-    const rect = listRef.current._outerRef.getBoundingClientRect();
+    const outerRef = listRef.current._outerRef;
+    const maxScrollLeft = (itemSize * listRef.current.props.itemCount) / 3;
 
-    if (e.clientY < rect.top || e.clientY > rect.bottom) return;
+    const rect = outerRef.getBoundingClientRect();
+    if (e.clientY < rect.top || e.clientY > rect.bottom) {
+      return;
+    }
 
-    listRef.current._outerRef.scrollLeft += e.deltaY;
+    outerRef.scrollLeft += e.deltaY;
+
+    if (outerRef.scrollLeft <= 0) {
+      outerRef.scrollLeft += maxScrollLeft;
+    } else if (outerRef.scrollLeft >= maxScrollLeft * 2) {
+      outerRef.scrollLeft -= maxScrollLeft;
+    }
   };
 
   return handleWheel;
