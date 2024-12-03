@@ -1,36 +1,13 @@
-import { useRef, useState, startTransition } from "react";
+import { useState } from "react";
 import HorizontalCarousel from "./components/HorizontalCarousel/HorizontalCarousel";
 import useImages from "./hooks/useImages";
-
-type Config = {
-  itemSize: number;
-};
-
-const defaultItemSize = 200;
+import { DEFAULT_ITEM_SIZE } from "./constants";
+import ConfigForm from "./components/ConfigForm/ConfigForm";
+import { Config } from "./types";
 
 const App = () => {
-  const itemSizeRef = useRef<HTMLInputElement>(null);
-  const [config, setConfig] = useState<Config>({ itemSize: defaultItemSize });
+  const [config, setConfig] = useState<Config>({ itemSize: DEFAULT_ITEM_SIZE });
   const images = useImages();
-
-  const handleSave = () => {
-    const newItemSize = itemSizeRef.current
-      ? parseInt(itemSizeRef.current.value)
-      : defaultItemSize;
-
-    startTransition(() => {
-      setConfig({ itemSize: newItemSize });
-    });
-  };
-
-  const handleReset = () => {
-    startTransition(() => {
-      setConfig({ itemSize: defaultItemSize });
-    });
-    if (itemSizeRef.current) {
-      itemSizeRef.current.value = defaultItemSize.toString();
-    }
-  };
 
   return (
     <div>
@@ -42,11 +19,7 @@ const App = () => {
           items={images}
         />
       )}
-      <h2>Config</h2>
-      <input ref={itemSizeRef} type="number" placeholder="Item size" />
-      <br />
-      <button onClick={handleSave}>Save</button>
-      <button onClick={handleReset}>Reset</button>
+      <ConfigForm config={config} setConfig={setConfig} />
     </div>
   );
 };

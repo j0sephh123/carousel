@@ -9,3 +9,7 @@ export type RawImageData = {
 };
 
 export type ImageData = string;
+
+export type Config = {
+  itemSize: number;
+}
