@@ -12,4 +12,5 @@ export type ImageData = string;
 
 export type Config = {
   itemSize: number;
-}
+  imagesLimit: number;
+};

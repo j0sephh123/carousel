@@ -15,14 +15,21 @@ export default function Image({
   index,
   size,
 }: Props) {
-  console.log({ index, src });
-
   return (
     <div
       style={{
         ...imgWrapperStyle,
       }}
     >
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+        }}
+      >
+        {index}
+      </div>
       <img
         style={{
           width: size,

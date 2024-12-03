@@ -6,7 +6,7 @@ import GenericInput from "./GenericInput";
 import GenericButton from "./GenericButton";
 
 type Props = {
-  setConfig: (config: { itemSize: number }) => void;
+  setConfig: React.Dispatch<React.SetStateAction<Config>>;
   config: Config;
 };
 
@@ -17,14 +17,14 @@ export default function ConfigForm({ config, setConfig }: Props) {
 
   const handleInputChange = (value: string | number) => {
     const parsedValue = typeof value === "string" ? parseInt(value, 10) : value;
-    setItemSize(parsedValue || 0); // Fallback to 0 if the parsed value is NaN
+    setItemSize(parsedValue || 0);
   };
 
   const handleSave = () => {
     const newItemSize = itemSize || DEFAULT_ITEM_SIZE;
 
     startTransition(() => {
-      setConfig({ itemSize: newItemSize });
+      setConfig((prev) => ({ ...prev, itemSize: newItemSize }));
     });
   };
 
@@ -32,7 +32,7 @@ export default function ConfigForm({ config, setConfig }: Props) {
     const resetSize = DEFAULT_ITEM_SIZE;
 
     startTransition(() => {
-      setConfig({ itemSize: resetSize });
+      setConfig((prev) => ({ ...prev, itemSize: resetSize }));
     });
 
     setItemSize(resetSize);

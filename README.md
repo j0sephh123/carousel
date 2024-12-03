@@ -19,7 +19,8 @@ An infinite image carousel.
 
 ## Tools used
 
-- [vite](https://vite.dev/)
+- [vite](https://vite.dev/) for setup
+- [react-window](https://react-window.vercel.app/#/examples/list/fixed-size) for virtualization
 
 ## Resources and/or ideas
 

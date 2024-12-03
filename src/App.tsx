@@ -1,13 +1,16 @@
 import { useState } from "react";
 import HorizontalCarousel from "./components/HorizontalCarousel/HorizontalCarousel";
 import useImages from "./hooks/useImages";
-import { DEFAULT_ITEM_SIZE } from "./constants";
+import { DEFAULT_IMAGES_LIMIT, DEFAULT_ITEM_SIZE } from "./constants";
 import ConfigForm from "./components/ConfigForm/ConfigForm";
 import { Config } from "./types";
 
 const App = () => {
-  const [config, setConfig] = useState<Config>({ itemSize: DEFAULT_ITEM_SIZE });
-  const images = useImages();
+  const [config, setConfig] = useState<Config>({
+    itemSize: DEFAULT_ITEM_SIZE,
+    imagesLimit: DEFAULT_IMAGES_LIMIT,
+  });
+  const { images, loadMore } = useImages();
 
   return (
     <div>
@@ -17,6 +20,7 @@ const App = () => {
           itemSize={config.itemSize}
           gap={10}
           items={images}
+          loadMore={loadMore}
         />
       )}
       <ConfigForm config={config} setConfig={setConfig} />

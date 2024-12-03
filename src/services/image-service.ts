@@ -7,8 +7,8 @@ const imageFetcher = async <T>(page: number, limit: number) => {
   return response.json() as T;
 };
 
-export const fetchImages = async (page: number) => {
-  const data = await imageFetcher<RawImageData[]>(page, 10);
+export const fetchImages = async (page: number, perPage: number) => {
+  const data = await imageFetcher<RawImageData[]>(page, perPage);
   const imageUrls = data.map((item) => item.download_url);
 
   return imageUrls;

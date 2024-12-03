@@ -1,7 +1,6 @@
-import { useRef, useEffect, memo } from "react";
+import { useRef } from "react";
 import { FixedSizeList } from "react-window";
 import useWindowSize from "../../hooks/useWindowSize";
-import { ImageData } from "../../types";
 import useMouse from "./useMouse";
 import useTouch from "./useTouch";
 import useWheel from "./useWheel";
@@ -9,23 +8,19 @@ import Image from "./Image/Image";
 import classes from "./HorizontalCarousel.module.css";
 
 type Props = {
-  items: ImageData[];
+  items: string[];
   itemSize: number;
   gap: number;
+  loadMore: () => void;
 };
 
-const BUFFER_SIZE = 3;
-
-const HorizontalCarousel = ({ items, itemSize, gap }: Props) => {
+const HorizontalCarousel = ({ items, itemSize, gap, loadMore }: Props) => {
   const { width } = useWindowSize();
   const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const listRef = useRef<any>(null);
-
-  // Extended item count (original items + buffer on both sides)
-  const extendedItemCount = items.length * BUFFER_SIZE;
+  const listRef = useRef<FixedSizeList>(null);
+  const extendedItemCount = items.length * 3;
 
   const { handleMouseDown, handleMouseMove, handleMouseUp } = useMouse({
     isDraggingRef,
@@ -40,14 +35,6 @@ const HorizontalCarousel = ({ items, itemSize, gap }: Props) => {
     startXRef,
   });
   const handleWheel = useWheel({ listRef, itemSize });
-
-  // Initialize scroll position to the middle
-  useEffect(() => {
-    if (listRef.current && listRef.current._outerRef) {
-      // Start in the middle of the extended range
-      listRef.current._outerRef.scrollLeft = itemSize * items.length;
-    }
-  }, [itemSize, items]);
 
   return (
     <div
@@ -68,11 +55,19 @@ const HorizontalCarousel = ({ items, itemSize, gap }: Props) => {
       <FixedSizeList
         ref={listRef}
         layout="horizontal"
-        height={itemSize} // Match height of items
+        height={itemSize}
         width={width}
-        itemSize={itemSize + gap} // Account for gap between items
+        itemSize={itemSize + gap}
         itemCount={extendedItemCount}
         className={classes.list}
+        onItemsRendered={(props) => {
+          console.log(props);
+
+          // console.log("visibleStartIndex", visibleStartIndex);
+          // if (visibleStartIndex === extendedItemCount - items.length) {
+          //   loadMore();
+          // }
+        }}
       >
         {({ index, style }) => {
           const realIndex = index % items.length;
@@ -94,4 +89,4 @@ const HorizontalCarousel = ({ items, itemSize, gap }: Props) => {
   );
 };
 
-export default memo(HorizontalCarousel);
+export default HorizontalCarousel;

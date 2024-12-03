@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { fetchImages } from "../services/image-service";
 
 export default function useImages() {
-  // TODO should we use string[] or make it an object. Do we need more stuff?
   const [images, setImages] = useState<string[]>([]);
   const didFetch = useRef(false);
   // TODO: Implement pagination
@@ -11,7 +10,7 @@ export default function useImages() {
   useEffect(() => {
     // TODO use better names
     const fn = async () => {
-      const response = await fetchImages(page);
+      const response = await fetchImages(page, 10);
       setImages(response);
     };
 
@@ -21,5 +20,10 @@ export default function useImages() {
     }
   }, [page]);
 
-  return images;
+  const loadMore = () => {
+    console.log("Load more images");
+    setPage(page + 1);
+  };
+
+  return { images, loadMore };
 }
