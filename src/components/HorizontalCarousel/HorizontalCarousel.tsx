@@ -1,88 +1,42 @@
 import { useRef, useEffect } from "react";
-import { FixedSizeList as List } from "react-window";
-import useWindowSize from "./hooks/useWindowSize";
-import { ImageData } from "./types";
+import { FixedSizeList } from "react-window";
+import useWindowSize from "../../hooks/useWindowSize";
+import { ImageData } from "../../types";
+import useMouse from "./useMouse";
+import { IsDragging, StartX, ScrollLeft, List } from "./types";
+import useTouch from "./useTouch";
+import useWheel from "./useWheel";
 
 type Props = {
   items: ImageData[];
 };
 
-// TODO rename the file and move to components folder
 const HorizontalCarousel = ({ items }: Props) => {
   const { width } = useWindowSize(); // Get updated width on resize
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-  const listRef = useRef(null);
+  const isDraggingRef = useRef<IsDragging>(false);
+  const startXRef = useRef<StartX>(0);
+  const scrollLeftRef = useRef<ScrollLeft>(0);
+  const listRef = useRef<List>(null);
   const itemWidth = 200 + 20; // 200px image + 10px margin on each side
 
   // Duplicate items
   // TODO useMemo
   const extendedItems = [...items, ...items, ...items];
 
-  // TODO fix types
-  const handleMouseDown = (e) => {
-    isDragging.current = true;
-    startX.current = e.pageX;
-    scrollLeft.current = listRef.current._outerRef.scrollLeft;
-    e.preventDefault(); // Prevent text selection
-  };
+  const { handleMouseDown, handleMouseMove, handleMouseUp } = useMouse({
+    isDraggingRef,
+    listRef,
+    startXRef,
+    scrollLeftRef,
+  });
+  const { handleTouchEnd, handleTouchMove, handleTouchStart } = useTouch({
+    isDraggingRef,
+    listRef,
+    scrollLeftRef,
+    startXRef,
+  });
 
-  // TODO fix types
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    const x = e.pageX;
-    const walk = startX.current - x;
-    listRef.current._outerRef.scrollLeft = scrollLeft.current + walk;
-  };
-
-  const handleMouseUp = () => {
-    isDragging.current = false;
-  };
-
-  // TODO fix types
-  const handleTouchStart = (e) => {
-    isDragging.current = true;
-    startX.current = e.touches[0].pageX;
-    scrollLeft.current = listRef.current._outerRef.scr // Fixed heightollLeft;
-  };
-
-  // TODO fix types
-  const handleTouchMove = (e) => {
-    if (!isDragging.current) return;
-    const x = e.touches[0].pageX;
-    const walk = startX.current - x;
-    listRef.current._outerRef.scrollLeft = scrollLeft.current + walk;
-  };
-
-  const handleTouchEnd = () => {
-    isDragging.current = false;
-  };
-
-  // TODO fix types
-  const handleWheel = (e) => {
-    if (!listRef.current || !listRef.current._outerRef) return;
-
-    const rect = listRef.current._outerRef.getBoundingClientRect();
- // Fixed height
-    listRef.current._outerRef.scrollLeft += e.deltaY;
-  };
-
-  // Adjust scroll position to the middle (original items) when reaching the edges
-  const handleScroll = () => {
-    if (!listRef.current || !listRef.current._outerRef) return;
-
-    const outerRef = listRef.current._outerRef;
-    const maxScrollLeft = itemWidth * items.length;
-
-    if (outerRef.scrollLeft <= 0) {
-      // Jump to the end of original items
-      outerRef.scrollLeft += maxScrollLeft;
-    } else if (outerRef.scrollLeft >= maxScrollLeft * 2) {
-      // Jump back to the start of original items
-      outerRef.scrollLeft -= maxScrollLeft;
-    }
-  };
+  const handleWheel = useWheel(listRef);
 
   // Initialize scroll position to the middle (start of original items)
   useEffect(() => {
@@ -96,11 +50,11 @@ const HorizontalCarousel = ({ items }: Props) => {
       style={{
         // TODO move into css file
         position: "relative",
-        cursor: isDragging.current ? "grabbing" : "grab",
+        cursor: isDraggingRef.current ? "grabbing" : "grab",
         height: "220px", // TODO needs to be dynamic?
         overflow: "hidden",
       }}
-      onMouseDown={handleMouseDown} // Fixed height
+      onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
@@ -109,7 +63,7 @@ const HorizontalCarousel = ({ items }: Props) => {
       onTouchEnd={handleTouchEnd}
       onWheel={handleWheel}
     >
-      <List
+      <FixedSizeList
         ref={listRef}
         layout="horizontal"
         height={220}
@@ -121,7 +75,6 @@ const HorizontalCarousel = ({ items }: Props) => {
           overflowY: "hidden",
           scrollbarWidth: "none",
         }}
-        onScroll={handleScroll}
       >
         {({ index, style }) => (
           <div
@@ -147,7 +100,7 @@ const HorizontalCarousel = ({ items }: Props) => {
             />
           </div>
         )}
-      </List>
+      </FixedSizeList>
     </div>
   );
 };

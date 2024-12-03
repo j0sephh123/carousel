@@ -1,4 +1,4 @@
-import HorizontalCarousel from "./Horizontal";
+import HorizontalCarousel from "./components/HorizontalCarousel/HorizontalCarousel";
 import useImages from "./hooks/useImages";
 
 const App = () => {
