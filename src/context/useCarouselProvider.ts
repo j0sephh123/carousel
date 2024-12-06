@@ -1,31 +1,11 @@
-import React, {
-  useState,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
-import { CarouselContext } from "./CarouselContext";
-import { fetchImages } from "../services/imagesService";
-import { DEFAULT_ITEMS_PER_VIEW, IMAGES_LIMIT, PAGE_SIZE } from "../constants";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { DEFAULT_ITEMS_PER_VIEW, PAGE_SIZE, IMAGES_LIMIT } from "../constants";
 import useSyncedState from "../hooks/useSyncedState";
+import { fetchImages } from "../services/imagesService";
 
-export type CarouselType = {
-  itemsPerView: number;
-  setItemsPerView: React.Dispatch<React.SetStateAction<number>>;
-  items: string[];
-  loadNextPage: () => boolean;
-  key: string;
-  resetKey: () => void;
-};
+const generateRandomKey = () => Math.random().toString(36).substring(7);
 
-type CarouselProviderProps = {
-  children: ReactNode;
-};
-
-export const CarouselProvider: React.FC<CarouselProviderProps> = ({
-  children,
-}) => {
+export default function useCarouselProvider() {
   const [itemsPerView, setItemsPerView] = useSyncedState(
     "itemsPerView",
     DEFAULT_ITEMS_PER_VIEW
@@ -83,22 +63,13 @@ export const CarouselProvider: React.FC<CarouselProviderProps> = ({
     return true;
   }, [canLoadMore]);
 
-  return (
-    <CarouselContext.Provider
-      value={{
-        itemsPerView,
-        setItemsPerView,
-        items,
-        loadNextPage,
-        key,
-        resetKey,
-      }}
-    >
-      {children}
-    </CarouselContext.Provider>
-  );
-};
-
-const generateRandomKey = () => {
-  return Math.random().toString(36).substring(7);
-};
+  return {
+    itemsPerView,
+    setItemsPerView,
+    key,
+    items,
+    canLoadMore,
+    loadNextPage,
+    resetKey,
+  };
+}
