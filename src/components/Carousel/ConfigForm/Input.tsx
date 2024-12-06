@@ -1,5 +1,5 @@
 import { ChangeEvent, forwardRef } from "react";
-import styles from "./GenericInput.module.css";
+import styles from "./Input.module.css";
 
 type InputType = "number";
 
@@ -14,7 +14,7 @@ interface GenericInputProps {
   max?: number;
 }
 
-const GenericInput = forwardRef<HTMLInputElement, GenericInputProps>(
+const Input = forwardRef<HTMLInputElement, GenericInputProps>(
   ({ type, value, onChange, placeholder, label, className, min, max }, ref) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       onChange(Number(event.target.value));
@@ -38,4 +38,4 @@ const GenericInput = forwardRef<HTMLInputElement, GenericInputProps>(
   }
 );
 
-export default GenericInput;
+export default Input;

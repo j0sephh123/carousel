@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 
-const useSyncedState = (key: string, defaultValue: number) => {
-  const [state, setState] = useState(() => {
+const useSyncedState = <T extends string | number>(
+  key: string,
+  defaultValue: T
+) => {
+  const [state, setState] = useState<T>(() => {
     const storedValue = localStorage.getItem(key);
     return storedValue ? JSON.parse(storedValue) : defaultValue;
   });

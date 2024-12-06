@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import useScrollable from "./hooks/useScrollable";
-import HorizontalCarousel from "./HorizontalCarousel";
 import { FixedListWithOuterRef } from "./types";
 import useCarouselContext from "../../context/useCarouselContext";
 import { GAP } from "../../constants";
 import useScroll from "./utils/handleScroll";
 import useDrag from "./hooks/useDrag";
+import HorizontalCarousel from "./HorizontalCarousel";
 
 export default function ScrollableContainer() {
   const { itemsPerView, items } = useCarouselContext();

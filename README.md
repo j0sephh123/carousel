@@ -14,6 +14,7 @@ The horizontal carousel is designed to showcase a scrolling gallery of images. I
 
 ### Configurations
 - number of items displayed
+- currently supporting switching between picsum and cats apis
 - ... want to add more stuff, but currently none other
 
 ---
