@@ -6,7 +6,7 @@ import { imageSources } from "./apiMapper";
 import { generateRandomKey } from "./utils";
 
 export default function useCarouselProvider() {
-  const [itemsPerView, setItemsPerView] = useSyncedState(
+  const [itemsPerView, setItemsPerView] = useSyncedState<number>(
     "itemsPerView",
     DEFAULT_ITEMS_PER_VIEW
   );
