@@ -1,9 +1,9 @@
 import { startTransition, useState } from "react";
 import classes from "./ConfigForm.module.css";
 import Input from "./Input";
-import useCarouselContext from "../../context/useCarouselContext";
 import Select from "./Select";
-import { imageSources } from "../../context/apiMapper";
+import useCarouselContext from "../../../context/useCarouselContext";
+import { imageSources } from "../../../context/apiMapper";
 
 export default function ConfigForm() {
   const {
