@@ -3,8 +3,7 @@ import { DEFAULT_ITEMS_PER_VIEW, IMAGES_LIMIT } from "../constants";
 import useSyncedState from "../hooks/useSyncedState";
 import { CarouselType } from "./types";
 import { imageSources } from "./apiMapper";
-
-const generateRandomKey = () => Math.random().toString(36).substring(7);
+import { generateRandomKey } from "./utils";
 
 export default function useCarouselProvider() {
   const [itemsPerView, setItemsPerView] = useSyncedState(
@@ -79,5 +78,7 @@ export default function useCarouselProvider() {
     resetKey,
     imageSource,
     setImageSource,
+    setItems,
+    setKey,
   };
 }
