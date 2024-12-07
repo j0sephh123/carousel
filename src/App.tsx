@@ -1,7 +1,7 @@
 import useCarouselContext from "./context/useCarouselContext";
 import styles from "./App.module.css";
 import ScrollableContainer from "./components/Carousel/ScrollableContainer";
-import ConfigForm from "./components/Carousel/ConfigForm/ConfigForm";
+import ConfigForm from "./components/ConfigForm/ConfigForm";
 
 const App = () => {
   const { key } = useCarouselContext();

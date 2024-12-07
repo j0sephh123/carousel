@@ -11,18 +11,6 @@ export default function useScrollable() {
   }, [scrollableRef]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (scrollableRef.current) {
-        setScrollableWidth(scrollableRef.current.clientWidth);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, [scrollableRef]);
-
-  useEffect(() => {
     const preventScroll = (event: WheelEvent) => {
       const container = scrollableRef.current;
       if (container && container.contains(event.target as Node)) {

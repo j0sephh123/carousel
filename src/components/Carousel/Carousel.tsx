@@ -4,13 +4,14 @@ import useCarouselContext from "../../context/useCarouselContext";
 import { GAP } from "../../constants";
 import Image from "./Image";
 import { FixedListWithOuterRef } from "./types";
+import styles from "./Carousel.module.css";
 
 type Props = {
   listRef: React.RefObject<FixedListWithOuterRef>;
   scrollableWidth: number;
 };
 
-const HorizontalCarousel = ({ listRef, scrollableWidth }: Props) => {
+const Carousel = ({ listRef, scrollableWidth }: Props) => {
   const { itemsPerView, items, loadNextPage } = useCarouselContext();
   const itemsRenderedRef = useRef<ListOnItemsRenderedProps | null>(null);
   const itemSize = scrollableWidth / itemsPerView;
@@ -39,7 +40,7 @@ const HorizontalCarousel = ({ listRef, scrollableWidth }: Props) => {
       width={scrollableWidth}
       itemSize={itemSize + GAP}
       itemCount={items.length * 2}
-      className="list"
+      className={styles.list}
       onItemsRendered={onItemsRenderedHandler}
     >
       {({ index, style }) => {
@@ -51,12 +52,7 @@ const HorizontalCarousel = ({ listRef, scrollableWidth }: Props) => {
               marginRight: GAP,
             }}
           >
-            <Image
-              size={itemSize}
-              src={items[realIndex]}
-              index={realIndex}
-              gap={GAP}
-            />
+            <Image size={itemSize} src={items[realIndex]} index={realIndex} />
           </div>
         );
       }}
@@ -64,4 +60,4 @@ const HorizontalCarousel = ({ listRef, scrollableWidth }: Props) => {
   );
 };
 
-export default memo(HorizontalCarousel);
+export default memo(Carousel);

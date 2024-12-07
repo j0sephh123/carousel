@@ -5,7 +5,8 @@ import useCarouselContext from "../../context/useCarouselContext";
 import { GAP } from "../../constants";
 import useScroll from "./utils/handleScroll";
 import useDrag from "./hooks/useDrag";
-import HorizontalCarousel from "./HorizontalCarousel";
+import HorizontalCarousel from "./Carousel";
+import styles from "./ScrollableContainer.module.css";
 
 export default function ScrollableContainer() {
   const { itemsPerView, items } = useCarouselContext();
@@ -49,7 +50,7 @@ export default function ScrollableContainer() {
       // scroll event
       onWheel={handleScroll}
       // static styles
-      className="wrapper"
+      className={styles.wrapper}
       // dynamic styles
       style={{
         height: scrollableWidth ? scrollableWidth / itemsPerView : "100%",
