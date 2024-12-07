@@ -3,6 +3,8 @@
 An infinite horizontal image carousel component.  
 Navigation within the carousel is triggered exclusively by **scroll** or **drag**
 
+[Deployed manually on netlify](https://amazing-cactus-9a82da.netlify.app/)
+
 ---
 
 ## Summary
@@ -13,6 +15,7 @@ The horizontal carousel is designed to showcase a scrolling gallery of images. I
 - uses an image api to get images from
 
 ### Configurations
+
 - number of items displayed
 - currently supporting switching between picsum and cats apis
 - ... want to add more stuff, but currently none other
@@ -23,7 +26,7 @@ The horizontal carousel is designed to showcase a scrolling gallery of images. I
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/j0sephh123/carousel
    ```
 2. Install dependencies:
    ```bash
@@ -33,12 +36,6 @@ The horizontal carousel is designed to showcase a scrolling gallery of images. I
    ```bash
    npm run dev
    ```
-
----
-
-## How to Test
-
-_TODO_: Add tests to verify component functionality.
 
 ---
 
