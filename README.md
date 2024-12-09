@@ -3,7 +3,7 @@
 An infinite horizontal image carousel component.  
 Navigation within the carousel is triggered exclusively by **scroll** or **drag**
 
-[Deployed manually on netlify](https://amazing-cactus-9a82da.netlify.app/)
+[Deployed manually on netlify](https://sunny-cajeta-c24ceb.netlify.app/)
 
 ![Scroll with limit 50](./scroll_with_limit_50.gif)
 ![Config](./config.gif)
