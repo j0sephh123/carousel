@@ -1,5 +1,13 @@
 import { PAGE_SIZE } from "../constants";
-import { RawImageData } from "../types/globalTypes";
+
+export type RawImageData = {
+  id: string;
+  download_url: string;
+  height: number;
+  author: string;
+  url: string;
+  width: number;
+};
 
 const imageFetcher = async <T>(page: number) => {
   const response = await fetch(
